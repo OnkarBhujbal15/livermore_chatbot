@@ -23,7 +23,7 @@ EMBED_MODEL = "sentence-transformers/paraphrase-MiniLM-L6-v2"
 GROQ_MODEL  = "llama-3.3-70b-versatile"
 FAISS_PATH  = "faiss_index"
 TOP_K       = 3
-PORT        = int(os.environ.get("PORT", 10000))
+PORT        = int(os.environ.get("PORT", 7860))
 
 # ── Flask app ─────────────────────────────────────────────────────────────────
 app = Flask(__name__)
