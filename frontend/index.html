@@ -8,21 +8,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
 <style>
-:root {
-  --bg:        #0e0c0a;
-  --bg2:       #161410;
-  --bg3:       #1e1b17;
-  --border:    rgba(255,255,255,0.07);
-  --gold:      #c9a84c;
-  --gold-dim:  #8a6e2e;
-  --red:       #8b0000;
-  --red-bright:#a31515;
-  --text:      #f0ece4;
-  --text-dim:  #9a9080;
-  --text-faint:#5a5248;
-  --mono:      'DM Mono', monospace;
-  --serif:     'Playfair Display', Georgia, serif;
-  --sans:      'DM Sans', sans-serif;
+:root{
+  --bg:#0e0c0a;--bg2:#161410;--bg3:#1e1b17;
+  --border:rgba(255,255,255,0.07);
+  --gold:#c9a84c;--gold-dim:#8a6e2e;
+  --red:#8b0000;--red-bright:#a31515;
+  --text:#f0ece4;--text-dim:#9a9080;--text-faint:#5a5248;
+  --mono:'DM Mono',monospace;--serif:'Playfair Display',Georgia,serif;--sans:'DM Sans',sans-serif;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:300;min-height:100vh;display:flex;flex-direction:column}
@@ -31,17 +23,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:
 nav{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;border-bottom:0.5px solid var(--border);background:var(--bg2);flex-wrap:wrap;gap:10px}
 .nav-logo{font-family:var(--serif);font-size:17px;color:var(--gold);letter-spacing:.02em}
 .nav-logo span{color:var(--text-dim);font-style:italic;font-size:12px;margin-left:8px}
-.nav-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.api-wrap{display:flex;align-items:center;gap:8px;background:var(--bg3);border:0.5px solid var(--border);border-radius:6px;padding:6px 12px}
-.api-wrap label{font-size:11px;color:var(--text-faint);font-family:var(--mono);white-space:nowrap}
-#apikey{background:none;border:none;outline:none;color:var(--text);font-family:var(--mono);font-size:12px;width:220px}
-#apikey::placeholder{color:var(--text-faint)}
 .backend-wrap{display:flex;align-items:center;gap:8px;background:var(--bg3);border:0.5px solid var(--border);border-radius:6px;padding:6px 12px}
 .backend-wrap label{font-size:11px;color:var(--text-faint);font-family:var(--mono);white-space:nowrap}
-#backendUrl{background:none;border:none;outline:none;color:var(--text);font-family:var(--mono);font-size:12px;width:260px}
+#backendUrl{background:none;border:none;outline:none;color:var(--text);font-family:var(--mono);font-size:12px;width:280px}
 #backendUrl::placeholder{color:var(--text-faint)}
-#keystatus{width:7px;height:7px;border-radius:50%;background:var(--text-faint);flex-shrink:0;transition:background .3s}
-#keystatus.active{background:#4ade80}
 
 /* LAYOUT */
 .layout{display:flex;flex:1;height:calc(100vh - 57px);overflow:hidden}
@@ -63,10 +48,9 @@ aside::-webkit-scrollbar-thumb{background:var(--bg3)}
 .stat-card{background:var(--bg3);border-radius:6px;padding:9px 11px;border:0.5px solid var(--border)}
 .stat-num{font-family:var(--mono);font-size:17px;color:var(--gold);line-height:1;margin-bottom:2px}
 .stat-lbl{font-size:10px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.08em}
-.label-tags{display:flex;flex-wrap:wrap;gap:5px}
 .ltag{font-size:10px;padding:2px 7px;border-radius:3px;background:rgba(201,168,76,.1);color:var(--gold-dim);border:0.5px solid rgba(201,168,76,.2);font-family:var(--mono)}
 .status-row{display:flex;align-items:center;gap:8px;font-size:11px;font-family:var(--mono);color:var(--text-faint)}
-.status-dot{width:7px;height:7px;border-radius:50%;background:var(--text-faint);flex-shrink:0}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--text-faint);flex-shrink:0;transition:background .3s}
 .status-dot.ok{background:#4ade80}
 .status-dot.err{background:#f87171}
 
@@ -122,29 +106,21 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden}
 #welcome p{font-size:14px;color:var(--text-dim);max-width:420px;line-height:1.7}
 .welcome-quote{font-family:var(--serif);font-style:italic;font-size:14px;color:var(--gold-dim);border-left:2px solid var(--gold-dim);padding:7px 14px;margin-top:6px;text-align:left;max-width:400px}
 
-/* RESPONSIVE */
-@media(max-width:700px){
-  aside{display:none}
-  #backendUrl{width:160px}
-  #apikey{width:140px}
-}
+@media(max-width:700px){aside{display:none}#backendUrl{width:180px}}
 </style>
 </head>
 <body>
 
 <nav>
   <div class="nav-logo">Jesse Livermore <span>Trading ChatBot</span></div>
-  <div class="nav-controls">
-    <div class="backend-wrap">
-      <label>BACKEND URL</label>
-      <input id="backendUrl" type="text" placeholder="https://your-app.onrender.com" autocomplete="off"/>
-    </div>
+  <div class="backend-wrap">
+    <label>BACKEND URL</label>
+    <input id="backendUrl" type="text" placeholder="https://your-app.onrender.com" autocomplete="off"/>
   </div>
 </nav>
 
 <div class="layout">
 
-  <!-- SIDEBAR -->
   <aside>
     <div class="sidebar-section">
       <div class="sec-title">Trader Profile</div>
@@ -185,7 +161,7 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden}
 
     <div class="sidebar-section">
       <div class="sec-title">Labels Covered</div>
-      <div class="label-tags">
+      <div style="display:flex;flex-wrap:wrap;gap:5px">
         <span class="ltag">Personal Life</span>
         <span class="ltag">Strategy</span>
         <span class="ltag">Timing</span>
@@ -201,21 +177,20 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden}
         <span>RAG · FAISS · LangChain</span>
         <span>paraphrase-MiniLM-L6-v2</span>
         <span>Llama 3.3 · Groq</span>
-        <span>Flask · Render</span>
-        <span>Netlify (this page)</span>
+        <span>Flask · Render (backend)</span>
+        <span>Netlify (frontend)</span>
       </div>
     </div>
   </aside>
 
-  <!-- MAIN CHAT -->
   <main>
     <div id="msgs">
       <div id="welcome">
         <div class="welcome-logo">&ldquo;</div>
         <h1>Ask Jesse Livermore</h1>
-        <p>This chatbot is trained on <em>Reminiscences of a Stock Operator</em> — 1,800 curated Q&amp;A pairs covering Livermore's complete trading philosophy.</p>
+        <p>Trained on <em>Reminiscences of a Stock Operator</em> — 1,800 curated Q&amp;A pairs covering Livermore's complete trading philosophy.</p>
         <div class="welcome-quote">"It was never the thinking that made me money — it was the sitting tight."</div>
-        <p style="font-size:12px;color:var(--text-faint);margin-top:6px">Enter your Backend URL and Groq API key above, then ask a question.</p>
+        <p style="font-size:12px;color:var(--text-faint);margin-top:6px">Paste your Render backend URL above, then ask a question.</p>
       </div>
     </div>
 
@@ -234,13 +209,7 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden}
 let msgCount = 0;
 const msgs = document.getElementById("msgs");
 
-// ── Inputs ────────────────────────────────────────────────────────────────────
 function getBackend(){ return (document.getElementById("backendUrl").value||"").replace(/\/+$/,"").trim(); }
-function getKey()    { return (document.getElementById("apikey").value||"").trim(); }
-
-document.getElementById("apikey").addEventListener("input", function(){
-  document.getElementById("keystatus").className = this.value.trim() ? "active" : "";
-});
 
 document.getElementById("backendUrl").addEventListener("change", checkBackend);
 document.getElementById("backendUrl").addEventListener("blur",   checkBackend);
@@ -249,7 +218,7 @@ async function checkBackend(){
   const url = getBackend();
   if(!url) return;
   try{
-    const r = await fetch(url + "/stats");
+    const r = await fetch(url+"/stats");
     const d = await r.json();
     document.getElementById("backend-dot").className = "status-dot ok";
     document.getElementById("backend-status-text").textContent = "connected";
@@ -260,12 +229,10 @@ async function checkBackend(){
   }
 }
 
-// ── Textarea ──────────────────────────────────────────────────────────────────
 const ta = document.getElementById("qinput");
 ta.addEventListener("input", ()=>{ ta.style.height="auto"; ta.style.height=Math.min(ta.scrollHeight,110)+"px"; });
 ta.addEventListener("keydown", e=>{ if(e.key==="Enter"&&!e.shiftKey){ e.preventDefault(); sendMsg(); }});
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
 function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 function now(){ return new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}); }
 function scroll(){ msgs.scrollTop = msgs.scrollHeight; }
@@ -318,14 +285,15 @@ function toggleCtx(id){
   document.getElementById("arr-"+id).textContent = box.classList.contains("open") ? "▾" : "▸";
 }
 
-// ── Send ──────────────────────────────────────────────────────────────────────
 async function sendMsg(){
   const q   = ta.value.trim();
   const url = getBackend();
-  const key = getKey();
 
   if(!q) return;
-  if(!url){ addErrMsg("Please enter your Render backend URL in the field at the top."); return; }
+  if(!url){
+    addErrMsg("Please paste your Render backend URL in the field at the top of the page.");
+    return;
+  }
 
   ta.value=""; ta.style.height="auto";
   document.getElementById("sendbtn").disabled=true;
@@ -344,7 +312,7 @@ async function sendMsg(){
     else addBotMsg(data.answer, data.context, data.labels);
   } catch(e){
     removeTyping();
-    addErrMsg("Could not reach the backend. Check your Render URL.");
+    addErrMsg("Could not reach the backend. Make sure your Render URL is correct and the service is awake.");
   }
   document.getElementById("sendbtn").disabled=false;
   ta.focus();
