@@ -3,16 +3,18 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Jesse Livermore — Trading ChatBot</title>
+<title>Jesse Livermore — Trading ChatBot & Strategy</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 :root{
   --bg:#0e0c0a;--bg2:#161410;--bg3:#1e1b17;
   --border:rgba(255,255,255,0.07);
   --gold:#c9a84c;--gold-dim:#8a6e2e;
   --red:#8b0000;--red-bright:#a31515;
+  --green:#22c55e;--green-dim:#15803d;
   --text:#f0ece4;--text-dim:#9a9080;--text-faint:#5a5248;
   --mono:'DM Mono',monospace;--serif:'Playfair Display',Georgia,serif;--sans:'DM Sans',sans-serif;
 }
@@ -20,7 +22,7 @@
 body{background:var(--bg);color:var(--text);font-family:var(--sans);font-weight:300;min-height:100vh;display:flex;flex-direction:column}
 
 /* NAV */
-nav{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;border-bottom:0.5px solid var(--border);background:var(--bg2);flex-wrap:wrap;gap:10px}
+nav{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;border-bottom:0.5px solid var(--border);background:var(--bg2);flex-wrap:wrap;gap:10px}
 .nav-logo{font-family:var(--serif);font-size:17px;color:var(--gold);letter-spacing:.02em}
 .nav-logo span{color:var(--text-dim);font-style:italic;font-size:12px;margin-left:8px}
 .backend-wrap{display:flex;align-items:center;gap:8px;background:var(--bg3);border:0.5px solid var(--border);border-radius:6px;padding:6px 12px}
@@ -28,8 +30,14 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:16px 2
 #backendUrl{background:none;border:none;outline:none;color:var(--text);font-family:var(--mono);font-size:12px;width:280px}
 #backendUrl::placeholder{color:var(--text-faint)}
 
+/* TABS */
+.tabs{display:flex;gap:0;border-bottom:0.5px solid var(--border);background:var(--bg2);padding:0 28px}
+.tab{padding:12px 20px;font-size:13px;font-family:var(--mono);color:var(--text-faint);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;user-select:none}
+.tab:hover{color:var(--text-dim)}
+.tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+
 /* LAYOUT */
-.layout{display:flex;flex:1;height:calc(100vh - 57px);overflow:hidden}
+.layout{display:flex;flex:1;overflow:hidden;height:calc(100vh - 105px)}
 
 /* SIDEBAR */
 aside{width:270px;flex-shrink:0;background:var(--bg2);border-right:0.5px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--bg3) transparent}
@@ -54,13 +62,14 @@ aside::-webkit-scrollbar-thumb{background:var(--bg3)}
 .status-dot.ok{background:#4ade80}
 .status-dot.err{background:#f87171}
 
-/* MAIN */
-main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+/* PANELS */
+.panel{display:none;flex:1;flex-direction:column;overflow:hidden}
+.panel.active{display:flex}
+
+/* ── CHAT PANEL ── */
 #msgs{flex:1;overflow-y:auto;padding:28px;display:flex;flex-direction:column;gap:22px;scrollbar-width:thin;scrollbar-color:var(--bg3) transparent}
 #msgs::-webkit-scrollbar{width:4px}
 #msgs::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:2px}
-
-/* messages */
 .msg{display:flex;gap:12px;animation:fadeup .3s ease}
 @keyframes fadeup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .msg.user{flex-direction:row-reverse}
@@ -78,8 +87,6 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden}
 .ctx-toggle:hover{color:var(--gold-dim)}
 .ctx-box{background:var(--bg3);border:0.5px solid var(--border);border-radius:6px;padding:11px 13px;font-size:11px;font-family:var(--mono);color:var(--text-faint);line-height:1.7;margin-top:3px;display:none;white-space:pre-wrap;word-break:break-word}
 .ctx-box.open{display:block}
-
-/* typing */
 .typing-wrap{display:flex;gap:12px;animation:fadeup .3s ease}
 .typing-av{width:34px;height:34px;border-radius:50%;background:var(--red);border:0.5px solid var(--gold-dim);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:13px;color:var(--gold);flex-shrink:0}
 .typing-bubble{background:var(--bg2);border:0.5px solid var(--border);border-radius:11px;border-top-left-radius:3px;padding:14px 18px;display:flex;gap:5px;align-items:center}
@@ -87,8 +94,6 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden}
 .dot:nth-child(2){animation-delay:.2s}
 .dot:nth-child(3){animation-delay:.4s}
 @keyframes blink{0%,60%,100%{opacity:.3;transform:scale(1)}30%{opacity:1;transform:scale(1.2)}}
-
-/* INPUT */
 .input-bar{padding:18px 28px;border-top:0.5px solid var(--border);background:var(--bg2)}
 .input-row{display:flex;gap:9px;background:var(--bg3);border:0.5px solid var(--border);border-radius:8px;padding:9px 13px;transition:border-color .2s}
 .input-row:focus-within{border-color:var(--gold-dim)}
@@ -98,29 +103,82 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden}
 #sendbtn:hover:not(:disabled){background:var(--red-bright)}
 #sendbtn:disabled{opacity:.4;cursor:not-allowed}
 .hint{font-size:11px;color:var(--text-faint);text-align:center;margin-top:7px;font-family:var(--mono)}
-
-/* WELCOME */
 #welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;text-align:center;padding:40px;gap:14px}
 .welcome-logo{font-family:var(--serif);font-size:54px;color:var(--gold);opacity:.12;line-height:1;margin-bottom:6px}
 #welcome h1{font-family:var(--serif);font-size:26px;font-weight:400;color:var(--text);line-height:1.3}
 #welcome p{font-size:14px;color:var(--text-dim);max-width:420px;line-height:1.7}
 .welcome-quote{font-family:var(--serif);font-style:italic;font-size:14px;color:var(--gold-dim);border-left:2px solid var(--gold-dim);padding:7px 14px;margin-top:6px;text-align:left;max-width:400px}
 
-@media(max-width:700px){aside{display:none}#backendUrl{width:180px}}
+/* ── DASHBOARD PANEL ── */
+#dash-panel{overflow-y:auto;padding:28px;scrollbar-width:thin;scrollbar-color:var(--bg3) transparent}
+#dash-panel::-webkit-scrollbar{width:4px}
+#dash-panel::-webkit-scrollbar-thumb{background:var(--bg3)}
+.dash-title{font-family:var(--serif);font-size:22px;font-weight:400;color:var(--text);margin-bottom:4px}
+.dash-sub{font-size:13px;color:var(--text-dim);margin-bottom:24px;line-height:1.6}
+.controls-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px;align-items:flex-end}
+.ctrl-group{display:flex;flex-direction:column;gap:6px}
+.ctrl-group label{font-size:11px;font-family:var(--mono);color:var(--text-faint);text-transform:uppercase;letter-spacing:.08em}
+.ctrl-group select,
+.ctrl-group input[type="date"]{
+  background:var(--bg3);border:0.5px solid var(--border);
+  border-radius:6px;padding:8px 12px;
+  color:var(--text);font-family:var(--mono);font-size:13px;
+  outline:none;cursor:pointer;
+}
+.ctrl-group select:focus,
+.ctrl-group input[type="date"]:focus{border-color:var(--gold-dim)}
+.ctrl-group select option{background:var(--bg3)}
+#runbtn{background:var(--red);border:none;border-radius:6px;color:var(--gold);font-family:var(--mono);font-size:13px;padding:9px 22px;cursor:pointer;transition:background .15s;height:38px;white-space:nowrap;align-self:flex-end}
+#runbtn:hover:not(:disabled){background:var(--red-bright)}
+#runbtn:disabled{opacity:.4;cursor:not-allowed}
+.results-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.result-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:8px;padding:16px}
+.result-card .rc-lbl{font-size:10px;font-family:var(--mono);color:var(--text-faint);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.result-card .rc-val{font-family:var(--mono);font-size:22px;font-weight:400}
+.result-card .rc-val.pos{color:var(--green)}
+.result-card .rc-val.neg{color:#f87171}
+.result-card .rc-val.gold{color:var(--gold)}
+.result-card .rc-val.neutral{color:var(--text)}
+.chart-wrap{background:var(--bg2);border:0.5px solid var(--border);border-radius:8px;padding:20px;margin-bottom:24px}
+.chart-wrap h3{font-family:var(--serif);font-size:15px;font-weight:400;color:var(--text-dim);margin-bottom:16px}
+.chart-wrap canvas{max-height:320px}
+.strategy-box{background:var(--bg2);border:0.5px solid var(--border);border-radius:8px;padding:20px;margin-bottom:24px}
+.strategy-box h3{font-family:var(--serif);font-size:15px;font-weight:400;color:var(--gold);margin-bottom:14px}
+.principle-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.principle{background:var(--bg3);border-radius:6px;padding:12px 14px;border-left:2px solid var(--gold-dim)}
+.principle strong{display:block;font-size:12px;font-weight:500;color:var(--gold-dim);margin-bottom:4px;font-family:var(--mono)}
+.principle span{font-size:12px;color:var(--text-dim);line-height:1.5}
+#dash-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;text-align:center;gap:12px}
+#dash-placeholder .ph-icon{font-family:var(--serif);font-size:48px;color:var(--gold);opacity:.15}
+#dash-placeholder p{font-size:14px;color:var(--text-faint);max-width:360px;line-height:1.7}
+.loading-indicator{display:none;align-items:center;gap:10px;font-size:13px;font-family:var(--mono);color:var(--text-faint);padding:20px 0}
+.loading-indicator.show{display:flex}
+.spin{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.err-box{background:rgba(248,113,113,.08);border:0.5px solid rgba(248,113,113,.3);border-radius:8px;padding:14px 16px;font-size:13px;color:#f87171;font-family:var(--mono);margin-bottom:20px;display:none}
+.err-box.show{display:block}
+
+@media(max-width:700px){aside{display:none}#backendUrl{width:180px}.results-grid{grid-template-columns:1fr 1fr}.principle-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
 <nav>
-  <div class="nav-logo">Jesse Livermore <span>Trading ChatBot</span></div>
+  <div class="nav-logo">Jesse Livermore <span>Trading ChatBot &amp; Strategy</span></div>
   <div class="backend-wrap">
     <label>BACKEND URL</label>
-    <input id="backendUrl" type="text" placeholder="https://your-app.onrender.com" autocomplete="off"/>
+    <input id="backendUrl" type="text" placeholder="https://your-space.hf.space" autocomplete="off"/>
   </div>
 </nav>
 
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('chat')">ChatBot</div>
+  <div class="tab" onclick="switchTab('dashboard')">Strategy Backtest</div>
+</div>
+
 <div class="layout">
 
+  <!-- SIDEBAR -->
   <aside>
     <div class="sidebar-section">
       <div class="sec-title">Trader Profile</div>
@@ -128,7 +186,6 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden}
       <div class="sidebar-name">Jesse Livermore</div>
       <div class="sidebar-sub">1877 – 1940 · Wall Street Legend</div>
     </div>
-
     <div class="sidebar-section">
       <div class="sec-title">Backend Status</div>
       <div class="status-row">
@@ -136,7 +193,6 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden}
         <span id="backend-status-text">not connected</span>
       </div>
     </div>
-
     <div class="sidebar-section">
       <div class="sec-title">Quick Questions</div>
       <div class="chip-grid">
@@ -148,7 +204,6 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden}
         <button class="chip" onclick="quickAsk('How did Livermore adapt to bear markets?')">Adapting to bear markets</button>
       </div>
     </div>
-
     <div class="sidebar-section">
       <div class="sec-title">Dataset Stats</div>
       <div class="stats-grid">
@@ -158,7 +213,6 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden}
         <div class="stat-card"><div class="stat-num" id="chunk-count">—</div><div class="stat-lbl">Chunks</div></div>
       </div>
     </div>
-
     <div class="sidebar-section">
       <div class="sec-title">Labels Covered</div>
       <div style="display:flex;flex-wrap:wrap;gap:5px">
@@ -170,30 +224,29 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden}
         <span class="ltag">Psychology</span>
       </div>
     </div>
-
     <div class="sidebar-section">
       <div class="sec-title">Stack</div>
       <div style="display:flex;flex-direction:column;gap:5px;font-size:11px;font-family:var(--mono);color:var(--text-faint)">
         <span>RAG · FAISS · LangChain</span>
         <span>paraphrase-MiniLM-L6-v2</span>
         <span>Llama 3.3 · Groq</span>
-        <span>Flask · Render (backend)</span>
+        <span>Flask · HF Spaces</span>
         <span>Netlify (frontend)</span>
       </div>
     </div>
   </aside>
 
-  <main>
+  <!-- CHAT PANEL -->
+  <div class="panel active" id="chat-panel">
     <div id="msgs">
       <div id="welcome">
         <div class="welcome-logo">&ldquo;</div>
         <h1>Ask Jesse Livermore</h1>
         <p>Trained on <em>Reminiscences of a Stock Operator</em> — 1,800 curated Q&amp;A pairs covering Livermore's complete trading philosophy.</p>
         <div class="welcome-quote">"It was never the thinking that made me money — it was the sitting tight."</div>
-        <p style="font-size:12px;color:var(--text-faint);margin-top:6px">Paste your Render backend URL above, then ask a question.</p>
+        <p style="font-size:12px;color:var(--text-faint);margin-top:6px">Paste your backend URL above, then ask a question.</p>
       </div>
     </div>
-
     <div class="input-bar">
       <div class="input-row">
         <textarea id="qinput" rows="1" placeholder="Ask about Livermore's trading principles, strategy, psychology..."></textarea>
@@ -201,14 +254,115 @@ main{flex:1;display:flex;flex-direction:column;overflow:hidden}
       </div>
       <div class="hint">Enter to send · Shift+Enter for new line</div>
     </div>
-  </main>
+  </div>
+
+  <!-- DASHBOARD PANEL -->
+  <div class="panel" id="dash-panel-wrap">
+    <div id="dash-panel">
+      <div class="dash-title">Livermore Strategy Backtest</div>
+      <div class="dash-sub">
+        Back-test Jesse Livermore's trend-following breakout strategy against a simple buy-and-hold approach.
+        The strategy enters on 20-day breakouts confirmed by 50MA &amp; 200MA, and exits on 20-day low breaks.
+      </div>
+
+      <!-- Controls -->
+      <div class="controls-row">
+        <div class="ctrl-group">
+          <label>Stock Symbol</label>
+          <select id="stockSelect">
+            <option value="GOOGL">GOOGL — Alphabet</option>
+            <option value="AAPL">AAPL — Apple</option>
+            <option value="MSFT">MSFT — Microsoft</option>
+            <option value="NVDA">NVDA — NVIDIA</option>
+            <option value="META">META — Meta</option>
+            <option value="TSLA">TSLA — Tesla</option>
+            <option value="AMZN">AMZN — Amazon</option>
+          </select>
+        </div>
+        <div class="ctrl-group">
+          <label>Start Date</label>
+          <input type="date" id="startDate" value="2020-01-01"/>
+        </div>
+        <div class="ctrl-group">
+          <label>End Date</label>
+          <input type="date" id="endDate" value="2025-12-31"/>
+        </div>
+        <button id="runbtn" onclick="runBacktest()">Run Backtest ↗</button>
+      </div>
+
+      <div class="loading-indicator" id="loading">
+        <div class="spin"></div>
+        <span>Running Livermore strategy backtest...</span>
+      </div>
+
+      <div class="err-box" id="errBox"></div>
+
+      <!-- Placeholder before first run -->
+      <div id="dash-placeholder">
+        <div class="ph-icon">&ldquo;</div>
+        <p>Select a stock and date range above, then click <strong>Run Backtest</strong> to see how Livermore's strategy performed.</p>
+      </div>
+
+      <!-- Results (hidden until backtest runs) -->
+      <div id="dash-results" style="display:none">
+        <div class="results-grid">
+          <div class="result-card">
+            <div class="rc-lbl">Stock</div>
+            <div class="rc-val gold" id="res-symbol">—</div>
+          </div>
+          <div class="result-card">
+            <div class="rc-lbl">Buy &amp; Hold Return</div>
+            <div class="rc-val neutral" id="res-bh">—</div>
+          </div>
+          <div class="result-card">
+            <div class="rc-lbl">Livermore Strategy Return</div>
+            <div class="rc-val" id="res-strat">—</div>
+          </div>
+          <div class="result-card">
+            <div class="rc-lbl">Outperformance</div>
+            <div class="rc-val" id="res-out">—</div>
+          </div>
+        </div>
+
+        <div class="chart-wrap">
+          <h3>Cumulative Return — Livermore Strategy vs Buy &amp; Hold</h3>
+          <canvas id="returnChart"></canvas>
+        </div>
+
+        <div class="strategy-box">
+          <h3>Key Livermore Principles in This Strategy</h3>
+          <div class="principle-grid">
+            <div class="principle">
+              <strong>Breakout Entry</strong>
+              <span>Buy only when price breaks above the 20-day high — confirming the line of least resistance is upward.</span>
+            </div>
+            <div class="principle">
+              <strong>Trend Confirmation</strong>
+              <span>Only trade when price is above both the 50MA and 200MA — never fight the major trend.</span>
+            </div>
+            <div class="principle">
+              <strong>Exit Discipline</strong>
+              <span>Exit immediately when price breaks below the 20-day low — cut losses without hesitation.</span>
+            </div>
+            <div class="principle">
+              <strong>No Averaging Down</strong>
+              <span>Trades only in the direction of strength — never hold a losing position hoping for recovery.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </div>
 
 <script>
+// ── State ─────────────────────────────────────────────────────────────────────
 let msgCount = 0;
 const msgs = document.getElementById("msgs");
+let chartInstance = null;
 
+// ── Backend URL ───────────────────────────────────────────────────────────────
 function getBackend(){ return (document.getElementById("backendUrl").value||"").replace(/\/+$/,"").trim(); }
 
 document.getElementById("backendUrl").addEventListener("change", checkBackend);
@@ -229,10 +383,16 @@ async function checkBackend(){
   }
 }
 
-const ta = document.getElementById("qinput");
-ta.addEventListener("input", ()=>{ ta.style.height="auto"; ta.style.height=Math.min(ta.scrollHeight,110)+"px"; });
-ta.addEventListener("keydown", e=>{ if(e.key==="Enter"&&!e.shiftKey){ e.preventDefault(); sendMsg(); }});
+// ── Tab switching ─────────────────────────────────────────────────────────────
+function switchTab(tab){
+  document.querySelectorAll(".tab").forEach((t,i)=>{
+    t.classList.toggle("active", (i===0&&tab==="chat")||(i===1&&tab==="dashboard"));
+  });
+  document.getElementById("chat-panel").classList.toggle("active", tab==="chat");
+  document.getElementById("dash-panel-wrap").classList.toggle("active", tab==="dashboard");
+}
 
+// ── Chat helpers ──────────────────────────────────────────────────────────────
 function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
 function now(){ return new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}); }
 function scroll(){ msgs.scrollTop = msgs.scrollHeight; }
@@ -285,25 +445,22 @@ function toggleCtx(id){
   document.getElementById("arr-"+id).textContent = box.classList.contains("open") ? "▾" : "▸";
 }
 
+// ── Chat send ─────────────────────────────────────────────────────────────────
+const ta = document.getElementById("qinput");
+ta.addEventListener("input", ()=>{ ta.style.height="auto"; ta.style.height=Math.min(ta.scrollHeight,110)+"px"; });
+ta.addEventListener("keydown", e=>{ if(e.key==="Enter"&&!e.shiftKey){ e.preventDefault(); sendMsg(); }});
+
 async function sendMsg(){
   const q   = ta.value.trim();
   const url = getBackend();
-
   if(!q) return;
-  if(!url){
-    addErrMsg("Please paste your Render backend URL in the field at the top of the page.");
-    return;
-  }
-
+  if(!url){ addErrMsg("Please paste your backend URL in the field at the top."); return; }
   ta.value=""; ta.style.height="auto";
   document.getElementById("sendbtn").disabled=true;
-  addUserMsg(q);
-  addTyping();
-
+  addUserMsg(q); addTyping();
   try{
     const r = await fetch(url+"/ask", {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
+      method:"POST", headers:{"Content-Type":"application/json"},
       body: JSON.stringify({query: q})
     });
     const data = await r.json();
@@ -312,13 +469,140 @@ async function sendMsg(){
     else addBotMsg(data.answer, data.context, data.labels);
   } catch(e){
     removeTyping();
-    addErrMsg("Could not reach the backend. Make sure your Render URL is correct and the service is awake.");
+    addErrMsg("Could not reach the backend. Check your URL and try again.");
   }
   document.getElementById("sendbtn").disabled=false;
   ta.focus();
 }
 
-function quickAsk(q){ ta.value=q; sendMsg(); }
+function quickAsk(q){ switchTab("chat"); ta.value=q; sendMsg(); }
+
+// ── Backtest ──────────────────────────────────────────────────────────────────
+async function runBacktest(){
+  const url = getBackend();
+  if(!url){
+    showErr("Please paste your backend URL at the top of the page first.");
+    return;
+  }
+
+  const symbol    = document.getElementById("stockSelect").value;
+  const startDate = document.getElementById("startDate").value;
+  const endDate   = document.getElementById("endDate").value;
+
+  showErr("");
+  document.getElementById("loading").classList.add("show");
+  document.getElementById("dash-results").style.display = "none";
+  document.getElementById("dash-placeholder").style.display = "none";
+  document.getElementById("runbtn").disabled = true;
+
+  try{
+    const r = await fetch(url+"/backtest", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({symbol, start_date: startDate, end_date: endDate})
+    });
+    const d = await r.json();
+    document.getElementById("loading").classList.remove("show");
+    document.getElementById("runbtn").disabled = false;
+
+    if(!r.ok){ showErr(d.error || "Server error"); return; }
+
+    renderResults(d);
+  } catch(e){
+    document.getElementById("loading").classList.remove("show");
+    document.getElementById("runbtn").disabled = false;
+    showErr("Could not reach backend. Check your URL.");
+  }
+}
+
+function showErr(msg){
+  const box = document.getElementById("errBox");
+  box.textContent = msg;
+  box.classList.toggle("show", !!msg);
+}
+
+function renderResults(d){
+  // Metric cards
+  document.getElementById("res-symbol").textContent = d.symbol;
+
+  const bhEl = document.getElementById("res-bh");
+  bhEl.textContent = (d.bh_return >= 0 ? "+" : "") + d.bh_return.toFixed(1) + "%";
+  bhEl.className = "rc-val " + (d.bh_return >= 0 ? "pos" : "neg");
+
+  const stEl = document.getElementById("res-strat");
+  stEl.textContent = (d.strategy_return >= 0 ? "+" : "") + d.strategy_return.toFixed(1) + "%";
+  stEl.className = "rc-val " + (d.strategy_return >= 0 ? "pos" : "neg");
+
+  const outEl = document.getElementById("res-out");
+  outEl.textContent = (d.outperformance >= 0 ? "+" : "") + d.outperformance.toFixed(1) + "%";
+  outEl.className = "rc-val " + (d.outperformance >= 0 ? "pos" : "neg");
+
+  // Chart
+  if(chartInstance) chartInstance.destroy();
+  const ctx = document.getElementById("returnChart").getContext("2d");
+  chartInstance = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: d.dates,
+      datasets: [
+        {
+          label: "Livermore Strategy",
+          data: d.strategy_series,
+          borderColor: "#c9a84c",
+          backgroundColor: "rgba(201,168,76,0.08)",
+          borderWidth: 2,
+          pointRadius: 0,
+          tension: 0.3,
+          fill: true,
+        },
+        {
+          label: "Buy & Hold",
+          data: d.bh_series,
+          borderColor: "#9a9080",
+          backgroundColor: "rgba(154,144,128,0.04)",
+          borderWidth: 1.5,
+          pointRadius: 0,
+          tension: 0.3,
+          fill: false,
+          borderDash: [4, 3],
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      interaction: { mode: "index", intersect: false },
+      plugins: {
+        legend: {
+          labels: { color: "#9a9080", font: { family: "DM Mono", size: 11 } }
+        },
+        tooltip: {
+          backgroundColor: "#1e1b17",
+          borderColor: "rgba(255,255,255,0.07)",
+          borderWidth: 1,
+          titleColor: "#f0ece4",
+          bodyColor: "#9a9080",
+          callbacks: {
+            label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)}%`
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: "#5a5248", font: { family: "DM Mono", size: 10 }, maxTicksLimit: 8 },
+          grid:  { color: "rgba(255,255,255,0.04)" }
+        },
+        y: {
+          ticks: {
+            color: "#5a5248", font: { family: "DM Mono", size: 10 },
+            callback: v => v.toFixed(0) + "%"
+          },
+          grid: { color: "rgba(255,255,255,0.04)" }
+        }
+      }
+    }
+  });
+
+  document.getElementById("dash-results").style.display = "block";
+}
 </script>
 </body>
 </html>
