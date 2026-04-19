@@ -305,7 +305,7 @@ aside::-webkit-scrollbar-thumb{background:var(--bg3)}
 
       <!-- Results (hidden until backtest runs) -->
       <div id="dash-results" style="display:none">
-        <div class="results-grid">
+        <div class="results-grid" style="grid-template-columns:repeat(5,1fr)">
           <div class="result-card">
             <div class="rc-lbl">Stock</div>
             <div class="rc-val gold" id="res-symbol">—</div>
@@ -321,6 +321,10 @@ aside::-webkit-scrollbar-thumb{background:var(--bg3)}
           <div class="result-card">
             <div class="rc-lbl">Outperformance</div>
             <div class="rc-val" id="res-out">—</div>
+          </div>
+          <div class="result-card">
+            <div class="rc-lbl">Total Trades</div>
+            <div class="rc-val neutral" id="res-trades">—</div>
           </div>
         </div>
 
@@ -535,6 +539,7 @@ function renderResults(d){
   const outEl = document.getElementById("res-out");
   outEl.textContent = (d.outperformance >= 0 ? "+" : "") + d.outperformance.toFixed(1) + "%";
   outEl.className = "rc-val " + (d.outperformance >= 0 ? "pos" : "neg");
+  document.getElementById("res-trades").textContent = d.trade_count;
 
   // Chart
   if(chartInstance) chartInstance.destroy();
