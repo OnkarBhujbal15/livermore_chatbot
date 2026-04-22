@@ -10,5 +10,7 @@ groq
 pandas
 gunicorn
 python-dotenv
+yfinance
 yfinancerouge-score
 rank-bm25
+scikit-learn
