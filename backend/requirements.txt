@@ -12,5 +12,7 @@ gunicorn
 python-dotenv
 yfinance
 yfinancerouge-score
+rouge-score
 rank-bm25
 scikit-learn
+scipy

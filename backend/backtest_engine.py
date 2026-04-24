@@ -9,6 +9,7 @@ import os
 import requests
 import numpy as np
 import pandas as pd
+from scipy.stats import spearmanr
 
 # Backend URL — self-call on same Render service, or override via env var
 BACKEND_URL = os.environ.get("BACKEND_URL", "http://localhost:7860")
@@ -16,28 +17,28 @@ BACKEND_URL = os.environ.get("BACKEND_URL", "http://localhost:7860")
 # 2x2 Stock Universe
 STOCK_GROUPS = {
     "Industrial / High Volatility": {
-        "tickers":  ["CAT", "XOM"],
+        "tickers":  ["CAT", "XOM", "FCX", "OXY"],
         "thesis":   "Cyclical, commodity-driven — closest to Livermore's original 1920s market",
         "color":    "#c9922a",
         "sector":   "industrial",
         "vol_tier": "high"
     },
     "Industrial / Low Volatility": {
-        "tickers":  ["JNJ", "KO"],
+        "tickers":  ["JNJ", "KO", "PG", "MCD"],
         "thesis":   "Defensive industrials — steady dividends, few breakout signals",
         "color":    "#2980b9",
         "sector":   "industrial",
         "vol_tier": "low"
     },
     "Tech / High Volatility": {
-        "tickers":  ["NVDA", "TSLA"],
+        "tickers":  ["NVDA", "TSLA", "META", "AMD"],
         "thesis":   "Modern narrative stocks — emotion-driven, like 1920s cotton futures",
         "color":    "#c0392b",
         "sector":   "tech",
         "vol_tier": "high"
     },
     "Tech / Low Volatility": {
-        "tickers":  ["MSFT", "AAPL"],
+        "tickers":  ["MSFT", "AAPL", "GOOGL", "ORCL"],
         "thesis":   "Institutional-grade tech — fundamentals suppress breakout signals",
         "color":    "#27ae60",
         "sector":   "tech",
@@ -100,6 +101,7 @@ def run_single(ticker, start, end):
             "bh_return":       d.get("bh_return", 0),
             "outperformance":  d.get("outperformance", 0),
             "trade_count":     d.get("trade_count", 0),
+            "beta":            d.get("beta", 1.0),
             # Extended metrics derived from the returned series
             "sharpe":          _sharpe(strat),
             "max_drawdown":    _max_drawdown(strat),
@@ -156,22 +158,21 @@ def run_comparison(start="2020-01-01", end="2025-01-01"):
             "avg_volatility": round(g["avg_volatility"].mean(), 2),
         })
 
-    # Hypothesis test: rho(avg_volatility, avg_sharpe) across 4 groups
-    # Core claim: Livermore's Sharpe correlates with asset volatility
-    gs         = pd.DataFrame(groups)
-    hypothesis = {"correlation": None, "supported": None, "interpretation": "Insufficient data"}
+    # Multi-hypothesis triangulation
+    hypothesis = {"supported": None, "interpretation": "Insufficient data"}
 
-    if len(gs) >= 3:
-        corr      = float(gs["avg_volatility"].corr(gs["avg_sharpe"]))
-        supported = corr > 0.3
+    if len(df) >= 3:
+        df["is_tech"] = (df["sector"] == "tech").astype(int)
+
+        corr_bs,  pval_bs  = spearmanr(df["beta"],    df["sharpe"])
+        corr_sec, pval_sec = spearmanr(df["is_tech"], df["sharpe"])
+
+        supported = float(corr_bs) > 0.3 and float(pval_bs) < 0.1
+
         hypothesis = {
-            "correlation": round(corr, 3),
-            "supported":   supported,
-            "interpretation": (
-                "Hypothesis SUPPORTED — Higher volatility stocks yield better Livermore Sharpe"
-                if supported else
-                "Hypothesis NOT SUPPORTED — Volatility alone does not predict strategy effectiveness"
-            )
+            "beta_sharpe":   {"rho": round(float(corr_bs),  3), "p": round(float(pval_bs),  3)},
+            "sector_sharpe": {"rho": round(float(corr_sec), 3), "p": round(float(pval_sec), 3)},
+            "supported": supported,
         }
 
     return {
