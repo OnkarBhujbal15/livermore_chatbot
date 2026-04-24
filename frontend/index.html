@@ -507,6 +507,9 @@ function setTheme(theme){
     document.getElementById('btn-light').classList.remove('active','gold');
   }
   updateChartTheme();
+  // Notify the Research Lab iframe
+  const iframe = document.querySelector('#research-panel iframe');
+  if(iframe) iframe.contentWindow.postMessage({type:'setTheme', theme}, '*');
 }
 
 function getThemeColors(){

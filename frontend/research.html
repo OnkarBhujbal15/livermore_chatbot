@@ -617,6 +617,16 @@ function renderVerdict(groupData){
     : "The correlation between volatility and Sharpe ratio is weaker than the hypothesis predicted. This may indicate that sector structure, liquidity conditions, or the specific time period tested played a larger role than raw volatility in determining strategy effectiveness. The results are worth examining across different date ranges.";
   document.getElementById("verdict-quote").textContent = ok ? QUOTES.supported : QUOTES.rejected;
 }
+// Listen for theme changes from parent index.html
+window.addEventListener('message', function(e){
+  if(e.data && e.data.type === 'setTheme'){
+    if(e.data.theme === 'light'){
+      document.documentElement.setAttribute('data-theme','light');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
+  }
+});
 </script>
 </body>
 </html>
