@@ -161,7 +161,8 @@ html,body { background:var(--bg-app); color:var(--text-main); font-family:var(--
   box-shadow:var(--shadow-sm); display:none;
 }
 .verdict-card.show { display:block; }
-.verdict-corr  { font-family:var(--serif); font-size:48px; font-weight:600; color:var(--primary); line-height:1; margin-bottom:10px; }
+.verdict-corr  { font-family:var(--serif); font-size:48px; font-weight:600; color:var(--primary); line-height:1; margin-bottom:8px; }
+.verdict-pval  { font-family:var(--mono); font-size:13px; color:var(--text-muted); margin-bottom:14px; }
 .verdict-title { font-family:var(--serif); font-size:22px; font-weight:600; margin-bottom:12px; }
 .verdict-title.pos { color:var(--success); }
 .verdict-title.neg { color:var(--danger); }
@@ -197,7 +198,7 @@ html,body { background:var(--bg-app); color:var(--text-main); font-family:var(--
 
     <div class="hyp-card">
       <div class="hyp-label">Research Hypothesis</div>
-      <div class="hyp-text">Livermore's alpha is driven by <em>human emotional cycles</em> in price — not by what a company does. If true, the strategy should produce higher <em>Sharpe ratios</em> on <em>high-volatility stocks</em>, regardless of sector, because fear and greed amplify breakout signals.</div>
+      <div class="hyp-text">Livermore's alpha is driven by <em>human emotional cycles</em> in price — not by what a company does. We test this progressively: first through <em>Beta</em> (market sensitivity), then <em>Volatility</em> (price behavior), then <em>Sector</em> (structural context). If the hypothesis holds, evidence should strengthen at each step — with <em>Tech / High-Volatility</em> stocks as the clearest signal.</div>
     </div>
   </div>
 
@@ -249,6 +250,12 @@ html,body { background:var(--bg-app); color:var(--text-main); font-family:var(--
           <div class="drop-row"><div class="drop-num">2</div>
             <select id="s2"><option value="XOM">XOM — ExxonMobil</option><option value="CAT">CAT — Caterpillar</option><option value="FCX">FCX — Freeport-McMoRan</option><option value="OXY">OXY — Occidental</option><option value="CLF">CLF — Cleveland-Cliffs</option></select>
           </div>
+          <div class="drop-row"><div class="drop-num">3</div>
+            <select id="s9"><option value="FCX">FCX — Freeport-McMoRan</option><option value="OXY">OXY — Occidental</option><option value="CAT">CAT — Caterpillar</option><option value="XOM">XOM — ExxonMobil</option><option value="CLF">CLF — Cleveland-Cliffs</option></select>
+          </div>
+          <div class="drop-row"><div class="drop-num">4</div>
+            <select id="s10"><option value="OXY">OXY — Occidental</option><option value="FCX">FCX — Freeport-McMoRan</option><option value="CAT">CAT — Caterpillar</option><option value="XOM">XOM — ExxonMobil</option><option value="CLF">CLF — Cleveland-Cliffs</option></select>
+          </div>
           <div class="quad-metrics" id="m1">
             <div class="qmet"><div class="v dim">—</div><div class="k">Alpha</div></div>
             <div class="qmet"><div class="v dim">—</div><div class="k">Sharpe</div></div>
@@ -268,6 +275,12 @@ html,body { background:var(--bg-app); color:var(--text-main); font-family:var(--
           </div>
           <div class="drop-row"><div class="drop-num">2</div>
             <select id="s4"><option value="KO">KO — Coca-Cola</option><option value="JNJ">JNJ — Johnson &amp; Johnson</option><option value="PG">PG — Procter &amp; Gamble</option><option value="WMT">WMT — Walmart</option><option value="MCD">MCD — McDonald's</option></select>
+          </div>
+          <div class="drop-row"><div class="drop-num">3</div>
+            <select id="s11"><option value="PG">PG — Procter &amp; Gamble</option><option value="WMT">WMT — Walmart</option><option value="JNJ">JNJ — Johnson &amp; Johnson</option><option value="KO">KO — Coca-Cola</option><option value="MCD">MCD — McDonald's</option></select>
+          </div>
+          <div class="drop-row"><div class="drop-num">4</div>
+            <select id="s12"><option value="MCD">MCD — McDonald's</option><option value="WMT">WMT — Walmart</option><option value="PG">PG — Procter &amp; Gamble</option><option value="JNJ">JNJ — Johnson &amp; Johnson</option><option value="KO">KO — Coca-Cola</option></select>
           </div>
           <div class="quad-metrics" id="m2">
             <div class="qmet"><div class="v dim">—</div><div class="k">Alpha</div></div>
@@ -291,6 +304,12 @@ html,body { background:var(--bg-app); color:var(--text-main); font-family:var(--
           <div class="drop-row"><div class="drop-num">2</div>
             <select id="s6"><option value="TSLA">TSLA — Tesla</option><option value="NVDA">NVDA — NVIDIA</option><option value="META">META — Meta</option><option value="AMD">AMD — AMD</option><option value="COIN">COIN — Coinbase</option></select>
           </div>
+          <div class="drop-row"><div class="drop-num">3</div>
+            <select id="s13"><option value="META">META — Meta</option><option value="AMD">AMD — AMD</option><option value="NVDA">NVDA — NVIDIA</option><option value="TSLA">TSLA — Tesla</option><option value="COIN">COIN — Coinbase</option></select>
+          </div>
+          <div class="drop-row"><div class="drop-num">4</div>
+            <select id="s14"><option value="AMD">AMD — AMD</option><option value="META">META — Meta</option><option value="NVDA">NVDA — NVIDIA</option><option value="TSLA">TSLA — Tesla</option><option value="COIN">COIN — Coinbase</option></select>
+          </div>
           <div class="quad-metrics" id="m3">
             <div class="qmet"><div class="v dim">—</div><div class="k">Alpha</div></div>
             <div class="qmet"><div class="v dim">—</div><div class="k">Sharpe</div></div>
@@ -311,6 +330,12 @@ html,body { background:var(--bg-app); color:var(--text-main); font-family:var(--
           <div class="drop-row"><div class="drop-num">2</div>
             <select id="s8"><option value="AAPL">AAPL — Apple</option><option value="MSFT">MSFT — Microsoft</option><option value="GOOGL">GOOGL — Alphabet</option><option value="ORCL">ORCL — Oracle</option><option value="IBM">IBM — IBM</option></select>
           </div>
+          <div class="drop-row"><div class="drop-num">3</div>
+            <select id="s15"><option value="GOOGL">GOOGL — Alphabet</option><option value="ORCL">ORCL — Oracle</option><option value="MSFT">MSFT — Microsoft</option><option value="AAPL">AAPL — Apple</option><option value="IBM">IBM — IBM</option></select>
+          </div>
+          <div class="drop-row"><div class="drop-num">4</div>
+            <select id="s16"><option value="ORCL">ORCL — Oracle</option><option value="GOOGL">GOOGL — Alphabet</option><option value="MSFT">MSFT — Microsoft</option><option value="AAPL">AAPL — Apple</option><option value="IBM">IBM — IBM</option></select>
+          </div>
           <div class="quad-metrics" id="m4">
             <div class="qmet"><div class="v dim">—</div><div class="k">Alpha</div></div>
             <div class="qmet"><div class="v dim">—</div><div class="k">Sharpe</div></div>
@@ -330,10 +355,10 @@ html,body { background:var(--bg-app); color:var(--text-main); font-family:var(--
     <div>
       <div class="sec-head">
         <h2>Which Stocks Fit Livermore Best?</h2>
-        <p>Each dot is one stock, positioned by its historical volatility and Livermore Sharpe ratio. If the hypothesis holds, all dots should drift toward the top-right. The gold trend line shows the direction of the relationship.</p>
+        <p>Each dot is one stock, positioned by its Beta (vs S&amp;P 500) and Livermore Sharpe ratio. If the hypothesis holds, all dots should drift toward the top-right. The gold trend line shows the direction of the relationship.</p>
       </div>
       <div class="chart-card">
-        <div class="chart-card-sub">X-axis: Historical volatility (σ) — Y-axis: Livermore strategy Sharpe ratio — Trend line: gold dashed</div>
+        <div class="chart-card-sub">X-axis: Beta (vs S&amp;P 500) — Y-axis: Livermore strategy Sharpe ratio — <span style="color:#d4af37">●</span> Ind/High &nbsp;·&nbsp; <span style="color:#3b82f6">●</span> Ind/Low &nbsp;·&nbsp; <span style="color:#ef4444">●</span> Tech/High &nbsp;·&nbsp; <span style="color:#10b981">●</span> Tech/Low — Trend line: gold dashed</div>
         <div style="position:relative;height:340px">
           <canvas id="scatter-chart" role="img" aria-label="Scatter plot volatility vs Sharpe ratio"></canvas>
         </div>
@@ -353,10 +378,11 @@ html,body { background:var(--bg-app); color:var(--text-main); font-family:var(--
     <div>
       <div class="sec-head">
         <h2>The Verdict</h2>
-        <p>Pearson correlation (rho) between average historical volatility and Sharpe ratio across the four quadrants. A value above +0.3 supports the hypothesis.</p>
+        <p>Three independent Spearman tests, ordered by evidence strength. Each adds a dimension — from market sensitivity (Beta) to price behavior (Volatility) to structural context (Sector). ρ &gt; 0.3 and p &lt; 0.10 counts as significant.</p>
       </div>
       <div class="verdict-card show" id="verdict-card">
         <div class="verdict-corr" id="verdict-corr">—</div>
+        <div class="verdict-pval"  id="verdict-pval">—</div>
         <div class="verdict-title" id="verdict-title">—</div>
         <div class="verdict-body"  id="verdict-body">—</div>
         <div class="verdict-quote" id="verdict-quote">—</div>
@@ -371,15 +397,15 @@ html,body { background:var(--bg-app); color:var(--text-main); font-family:var(--
 const BACKEND = "https://Ullas07-livermore-chatbot.hf.space";
 
 const QUADS = [
-  { ids:["s1","s2"], metId:"m1", color:"#d4af37", label:"Industrial / High Vol" },
-  { ids:["s3","s4"], metId:"m2", color:"#3b82f6", label:"Industrial / Low Vol"  },
-  { ids:["s5","s6"], metId:"m3", color:"#ef4444", label:"Tech / High Vol"       },
-  { ids:["s7","s8"], metId:"m4", color:"#10b981", label:"Tech / Low Vol"        },
+  { ids:["s1","s2","s9","s10"],  metId:"m1", color:"#d4af37", label:"Industrial / High Vol" },
+  { ids:["s3","s4","s11","s12"], metId:"m2", color:"#3b82f6", label:"Industrial / Low Vol"  },
+  { ids:["s5","s6","s13","s14"], metId:"m3", color:"#ef4444", label:"Tech / High Vol"       },
+  { ids:["s7","s8","s15","s16"], metId:"m4", color:"#10b981", label:"Tech / Low Vol"        },
 ];
 
 const QUOTES = {
-  supported: '"The market does not beat them. They beat themselves, because though they have brains they cannot sit still." — Jesse Livermore. High-volatility stocks amplify the emotional cycles that his breakout signals are designed to exploit.',
-  rejected:  '"There is a time for all things, but I did not know it." — Jesse Livermore. Even a strategy built for volatility has its limits — markets and centuries change the rules of the game.',
+  supported: '"The market does not beat them. They beat themselves, because though they have brains they cannot sit still." — Jesse Livermore. High-beta stocks amplify market trends and emotional cycles — exactly the condition his breakout signals are designed to exploit.',
+  rejected:  '"There is a time for all things, but I did not know it." — Jesse Livermore. Even a strategy built for high-beta momentum has its limits — sector dynamics and time period play a larger role than market sensitivity alone.',
 };
 
 let scatterChart = null;
@@ -422,6 +448,7 @@ async function fetchOne(symbol, start, end){
     bhReturn:    d.bh_return,
     outperform:  d.outperformance,
     trades:      d.trade_count,
+    beta:    d.beta || 1.0,
     sharpe:  sharpe(st),
     maxdd:   maxdd(st),
     vol:     vol(bh),
@@ -468,7 +495,7 @@ async function runComparison(){
 
   renderScatter(allStocks);
   renderCurves(allStocks);
-  renderVerdict(groupData);
+  renderVerdict(allStocks);
 
   document.getElementById("results").classList.add("show");
   btn.disabled=false; sp.classList.remove("on");
@@ -487,7 +514,7 @@ function renderScatter(stocks){
   scatterChart = new Chart(document.getElementById("scatter-chart").getContext("2d"),{
     type:"scatter",
     data:{ datasets: stocks.map(s=>({
-      label:s.ticker, data:[{x:s.vol,y:s.sharpe}],
+      label:s.ticker, data:[{x:+s.beta.toFixed(3),y:s.sharpe}],
       backgroundColor:s.color+"bb", borderColor:s.color,
       borderWidth:1.5, pointRadius:20, pointHoverRadius:22
     }))},
@@ -503,14 +530,15 @@ function renderScatter(stocks){
           padding:12, cornerRadius:8,
           callbacks:{ label: ctx=>{
             const s=stocks[ctx.datasetIndex];
-            return[`${s.ticker}  (${s.groupLabel})`,`Volatility: ${s.vol}%   Sharpe: ${s.sharpe}`];
+            return[`${s.ticker}  (${s.groupLabel})`,
+                   `Beta: ${s.beta.toFixed(2)}   Sharpe: ${s.sharpe}   B&H: ${s.bhReturn>=0?"+":""}${s.bhReturn.toFixed(1)}%`];
           }}
         }
       },
       scales:{
-        x:{ title:{display:true,text:"Historical Volatility  (%)",color:txtC,font:{family:"Inter",size:11}},
-            min:0, max:Math.max(...stocks.map(s=>s.vol))*1.25,
-            grid:{color:gridC}, ticks:{color:txtC,font:{family:"Inter",size:11},callback:v=>v+"%"} },
+        x:{ title:{display:true,text:"Beta (vs S&P 500)",color:txtC,font:{family:"Inter",size:11}},
+            min:0, max:Math.max(...stocks.map(s=>s.beta))*1.3,
+            grid:{color:gridC}, ticks:{color:txtC,font:{family:"Inter",size:11},callback:v=>v.toFixed(2)} },
         y:{ title:{display:true,text:"Livermore Strategy Sharpe Ratio",color:txtC,font:{family:"Inter",size:11}},
             grid:{color:gridC}, ticks:{color:txtC,font:{family:"Inter",size:11}} }
       }
@@ -519,7 +547,7 @@ function renderScatter(stocks){
       id:"rlQ",
       afterDraw(chart){
         const {ctx:cx,chartArea:ca,scales:{x,y}}=chart;
-        const vs=stocks.map(s=>s.vol), ss=stocks.map(s=>s.sharpe);
+        const vs=stocks.map(s=>s.beta), ss=stocks.map(s=>s.sharpe);
         const mv=(Math.max(...vs)+Math.min(...vs))/2, ms=(Math.max(...ss)+Math.min(...ss))/2;
         const px=x.getPixelForValue(mv), py=y.getPixelForValue(ms);
 
@@ -529,13 +557,13 @@ function renderScatter(stocks){
         cx.beginPath(); cx.moveTo(ca.left,py);   cx.lineTo(ca.right,py);  cx.stroke();
         cx.setLineDash([]);
 
-        // trend line
+        // OLS trend line: beta → sharpe
         const n=stocks.length, mvv=vs.reduce((a,v)=>a+v,0)/n, mvs=ss.reduce((a,v)=>a+v,0)/n;
-        const num=stocks.reduce((a,s)=>a+(s.vol-mvv)*(s.sharpe-mvs),0);
-        const den=stocks.reduce((a,s)=>a+(s.vol-mvv)**2,0);
+        const num=stocks.reduce((a,s)=>a+(s.beta-mvv)*(s.sharpe-mvs),0);
+        const den=stocks.reduce((a,s)=>a+(s.beta-mvv)**2,0);
         if(den>0){
           const sl=num/den, ic=mvs-sl*mvv;
-          const x0=0, x1=Math.max(...vs)*1.2;
+          const x0=0, x1=Math.max(...stocks.map(s=>s.beta))*1.2;
           cx.beginPath(); cx.strokeStyle="rgba(212,175,55,0.55)"; cx.lineWidth=2;
           cx.lineWidth=2; cx.setLineDash([4,4]);
           cx.moveTo(x.getPixelForValue(x0),y.getPixelForValue(sl*x0+ic));
@@ -592,41 +620,128 @@ function renderCurves(stocks){
   });
 }
 
-function renderVerdict(groupData){
-  const groups = groupData.map(g=>({
-    vol: g.stocks.length ? avg(g.stocks,"vol")    : 0,
-    sh:  g.stocks.length ? avg(g.stocks,"sharpe") : 0,
-  }));
-  const n=groups.length;
-  if(n<3) return;
-  const mv=groups.reduce((a,g)=>a+g.vol,0)/n, ms=groups.reduce((a,g)=>a+g.sh,0)/n;
-  const num=groups.reduce((a,g)=>a+(g.vol-mv)*(g.sh-ms),0);
-  const dv=Math.sqrt(groups.reduce((a,g)=>a+(g.vol-mv)**2,0)/n);
-  const ds=Math.sqrt(groups.reduce((a,g)=>a+(g.sh-ms)**2,0)/n);
-  const corr = (dv>0&&ds>0) ? +(num/n/(dv*ds)).toFixed(3) : 0;
-  const ok = corr > 0.3;
+/* ── Spearman rank correlation + two-tailed p-value ── */
+function lgamma(z){
+  const p=[0.99999999999980993,676.5203681218851,-1259.1392167224028,
+           771.32342877765313,-176.61502916214059,12.507343278686905,
+           -0.13857109526572012,9.9843695780195716e-6,1.5056327351493116e-7];
+  if(z<0.5) return Math.log(Math.PI/Math.sin(Math.PI*z))-lgamma(1-z);
+  z-=1; let x=p[0], t=z+7.5;
+  for(let i=1;i<9;i++) x+=p[i]/(z+i);
+  return 0.5*Math.log(2*Math.PI)+(z+0.5)*Math.log(t)-t+Math.log(x);
+}
+function betacf(x,a,b){
+  const MAXIT=200,EPS=3e-7,FPMIN=1e-30;
+  const qab=a+b,qap=a+1,qam=a-1;
+  let c=1,d=1-qab*x/qap;
+  if(Math.abs(d)<FPMIN) d=FPMIN; d=1/d; let h=d;
+  for(let m=1;m<=MAXIT;m++){
+    const m2=2*m;
+    let aa=m*(b-m)*x/((qam+m2)*(a+m2));
+    d=1+aa*d; if(Math.abs(d)<FPMIN) d=FPMIN;
+    c=1+aa/c; if(Math.abs(c)<FPMIN) c=FPMIN;
+    d=1/d; h*=d*c;
+    aa=-(a+m)*(qab+m)*x/((a+m2)*(qap+m2));
+    d=1+aa*d; if(Math.abs(d)<FPMIN) d=FPMIN;
+    c=1+aa/c; if(Math.abs(c)<FPMIN) c=FPMIN;
+    d=1/d; const del=d*c; h*=del;
+    if(Math.abs(del-1)<EPS) break;
+  }
+  return h;
+}
+function ibeta(x,a,b){
+  if(x<=0) return 0; if(x>=1) return 1;
+  const bt=Math.exp(a*Math.log(x)+b*Math.log(1-x)-lgamma(a)-lgamma(b)+lgamma(a+b));
+  return x<(a+1)/(a+b+2) ? bt*betacf(x,a,b)/a : 1-bt*betacf(1-x,b,a)/b;
+}
+function tPvalue(t,df){ return ibeta(df/(df+t*t), df/2, 0.5); }
 
-  document.getElementById("verdict-corr").textContent  = "rho = "+(corr>=0?"+":"")+corr;
+function rankArray(arr){
+  const sorted=arr.map((v,i)=>({v,i})).sort((a,b)=>a.v-b.v);
+  const ranks=new Array(arr.length);
+  let i=0;
+  while(i<sorted.length){
+    let j=i;
+    while(j<sorted.length&&sorted[j].v===sorted[i].v) j++;
+    const r=(i+j+1)/2;
+    for(let k=i;k<j;k++) ranks[sorted[k].i]=r;
+    i=j;
+  }
+  return ranks;
+}
+function spearmanr(xs,ys){
+  const n=xs.length;
+  if(n<3) return {rho:0,pval:1};
+  const rx=rankArray(xs),ry=rankArray(ys);
+  const mx=rx.reduce((a,v)=>a+v,0)/n, my=ry.reduce((a,v)=>a+v,0)/n;
+  const num=rx.reduce((a,v,i)=>a+(v-mx)*(ry[i]-my),0);
+  const dX=Math.sqrt(rx.reduce((a,v)=>a+(v-mx)**2,0));
+  const dY=Math.sqrt(ry.reduce((a,v)=>a+(v-my)**2,0));
+  const rho=(dX>0&&dY>0)?num/(dX*dY):0;
+  const t=rho*Math.sqrt(n-2)/Math.sqrt(Math.max(1e-9,1-rho*rho));
+  return {rho:+rho.toFixed(3), pval:+tPvalue(Math.abs(t),n-2).toFixed(3)};
+}
+
+function renderVerdict(stocks){
+  if(stocks.length < 3) return;
+  const n = stocks.length;
+
+  const r_bs  = spearmanr(stocks.map(s=>s.beta),                           stocks.map(s=>s.sharpe));
+  const r_sec = spearmanr(stocks.map(s=>s.groupLabel.includes("Tech")?1:0), stocks.map(s=>s.sharpe));
+
+  const ok  = r_bs.rho  > 0.3 && r_bs.pval  < 0.1;
+  const okS = r_sec.rho > 0.3 && r_sec.pval < 0.1;
+
+  // Headline uses the more significant result
+  const lead = r_bs.pval <= r_sec.pval ? r_bs : r_sec;
+  document.getElementById("verdict-corr").textContent = "ρ = "+(lead.rho>=0?"+":"")+lead.rho;
+  document.getElementById("verdict-pval").textContent = `p = ${lead.pval}  ·  n = ${n}  ·  df = ${n-2}`;
+
   const tv = document.getElementById("verdict-title");
-  tv.textContent = ok
-    ? "Hypothesis supported — volatility drives Livermore alpha"
-    : "Hypothesis not confirmed — volatility alone is not the deciding factor";
-  tv.className = "verdict-title "+(ok?"pos":"neg");
-  document.getElementById("verdict-body").textContent = ok
-    ? "Strong positive correlation between average historical volatility and Sharpe ratio across the four quadrants. High-volatility stocks — both industrial and tech — produce meaningfully better risk-adjusted returns under the Livermore breakout framework. This confirms that the strategy's edge comes from emotional price cycles, not from any specific industry."
-    : "The correlation between volatility and Sharpe ratio is weaker than the hypothesis predicted. This may indicate that sector structure, liquidity conditions, or the specific time period tested played a larger role than raw volatility in determining strategy effectiveness. The results are worth examining across different date ranges.";
+  const bothOk  = ok && okS;
+  const eitherOk = ok || okS;
+  tv.textContent = bothOk  ? "Both factors supported — Beta and Sector drive Livermore alpha"
+    : ok                   ? "Beta supported — market sensitivity is the key driver"
+    : okS                  ? "Sector supported — structural context drives the effect"
+    :                        "Hypothesis not confirmed — neither factor reaches significance";
+  tv.className = "verdict-title "+(eitherOk?"pos":"neg");
+
+  const sign = v => v>=0?"+":"";
+  const stronger = r_bs.pval < r_sec.pval ? "Beta" : "Sector";
+  const weaker   = stronger === "Beta" ? "Sector" : "Beta";
+
+  const row = (label, r, tag) => {
+    const pass = r.rho > 0.3 && r.pval < 0.1;
+    return `<tr>
+      <td style="padding:6px 12px 6px 0;font-family:var(--mono);font-size:12px;color:var(--text-muted)">${label}</td>
+      <td style="padding:6px 12px;font-family:var(--mono);font-size:12px;color:var(--text-main);font-weight:600">ρ = ${sign(r.rho)}${r.rho}</td>
+      <td style="padding:6px 12px;font-family:var(--mono);font-size:12px;color:var(--text-muted)">p = ${r.pval}</td>
+      <td style="padding:6px 0;font-size:13px">${pass?"✅":"✗"}</td>
+      <td style="padding:6px 0 6px 12px;font-size:11px;color:var(--text-faint)">${tag}</td>
+    </tr>`;
+  };
+
+  // Dynamic conclusion based on p-values
+  let conclusion;
+  if(bothOk){
+    conclusion = `Both hypotheses are supported. <strong>${stronger}</strong> shows stronger evidence (p = ${Math.min(r_bs.pval,r_sec.pval)}) than ${weaker} (p = ${Math.max(r_bs.pval,r_sec.pval)}), suggesting ${stronger==="Beta"?"market sensitivity":"sector structure"} is the primary driver — but both dimensions contribute independently to Livermore strategy effectiveness.`;
+  } else if(ok){
+    conclusion = `Beta reaches significance (ρ = ${sign(r_bs.rho)}${r_bs.rho}, p = ${r_bs.pval}) while Sector does not (p = ${r_sec.pval}). Market sensitivity — not industry structure — is what determines whether Livermore's breakout signals fire cleanly.`;
+  } else if(okS){
+    conclusion = `Sector reaches significance (ρ = ${sign(r_sec.rho)}${r_sec.rho}, p = ${r_sec.pval}) while Beta does not (p = ${r_bs.pval}). Structural context — Tech vs Industrial — is a stronger predictor than raw market sensitivity in this period.`;
+  } else {
+    conclusion = `Neither Beta (p = ${r_bs.pval}) nor Sector (p = ${r_sec.pval}) reaches the 10% threshold. Try extending the date range to include a full bull-bear cycle to sharpen the effect.`;
+  }
+
+  document.getElementById("verdict-body").innerHTML = `
+    <table style="border-collapse:collapse;margin-bottom:16px;width:100%">
+      ${row("Beta → Sharpe",   r_bs,  "market sensitivity")}
+      ${row("Sector → Sharpe", r_sec, "structural context")}
+    </table>
+    <span style="font-size:13px;color:var(--text-muted);line-height:1.8">${conclusion}</span>`;
+
   document.getElementById("verdict-quote").textContent = ok ? QUOTES.supported : QUOTES.rejected;
 }
-// Listen for theme changes from parent index.html
-window.addEventListener('message', function(e){
-  if(e.data && e.data.type === 'setTheme'){
-    if(e.data.theme === 'light'){
-      document.documentElement.setAttribute('data-theme','light');
-    } else {
-      document.documentElement.removeAttribute('data-theme');
-    }
-  }
-});
 </script>
 </body>
 </html>

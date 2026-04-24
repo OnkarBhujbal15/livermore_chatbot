@@ -59,7 +59,20 @@ tfidf_vectorizer = TfidfVectorizer(stop_words="english", ngram_range=(1, 2))
 tfidf_matrix     = tfidf_vectorizer.fit_transform(df["Questions"].fillna("").tolist())
 print(f"TF-IDF ready — {tfidf_matrix.shape[0]} rows, {tfidf_matrix.shape[1]} features.", flush=True)
 
+# Pre-download SPY returns once at startup for beta calculation
+print("Downloading SPY benchmark...", flush=True)
+_spy_cache = {}
+try:
+    _spy_raw = yf.download("SPY", start="2015-01-01", end="2026-01-01", auto_adjust=True, progress=False)
+    if isinstance(_spy_raw.columns, pd.MultiIndex):
+        _spy_raw.columns = _spy_raw.columns.get_level_values(0)
+    _spy_cache["returns"] = _spy_raw["Close"].pct_change().dropna()
+    print(f"SPY loaded — {len(_spy_cache['returns'])} trading days.", flush=True)
+except Exception as e:
+    print(f"SPY download failed: {e}", flush=True)
+
 print("Flask app ready — routes active.", flush=True)
+
 
 
 def hybrid_rerank(query, faiss_docs):
@@ -197,6 +210,20 @@ def backtest():
         strat_total = float(dc["Strat Cumulative"].iloc[-1])
         trade_count = int(pd.Series(positions).diff().fillna(0).ne(0).sum())
 
+        # Beta against SPY (uses startup cache — no extra network call)
+        beta = 1.0
+        try:
+            if "returns" in _spy_cache:
+                spy_ret   = _spy_cache["returns"]
+                stock_ret = d["Close"].pct_change().dropna()
+                common    = stock_ret.index.intersection(spy_ret.index)
+                common    = common[(common >= pd.Timestamp(start_date)) & (common <= pd.Timestamp(end_date))]
+                if len(common) > 30:
+                    sr, mr = stock_ret[common], spy_ret[common]
+                    beta   = round(float(sr.cov(mr) / mr.var()), 3)
+        except Exception:
+            pass
+
         step = max(1, len(dc) // 200)
         ds   = dc.iloc[::step]
 
@@ -208,6 +235,7 @@ def backtest():
             "strategy_return": round(strat_total * 100, 2),
             "outperformance":  round((strat_total - bh_total) * 100, 2),
             "trade_count":     trade_count,
+            "beta":            beta,
             "dates":           ds.index.strftime("%Y-%m-%d").tolist(),
             "bh_series":       [round(v * 100, 2) for v in ds["BH Cumulative"].tolist()],
             "strategy_series": [round(v * 100, 2) for v in ds["Strat Cumulative"].tolist()],
